@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Test Suite — Kalkulator Waris Islam</title>
+<style>
+  body{ font-family: -apple-system, sans-serif; max-width:700px; margin:2rem auto; padding:0 1rem; color:#1D1B16; }
+  h1{ color:#12403E; }
+  ul{ padding-left:1.2rem; }
+  li{ margin:0.3rem 0; }
+</style>
+</head>
+<body>
+  <h1>Test Suite: Faraidh Calculation Engine</h1>
+  <p>Hasil test juga dicetak ke console browser (F12). Total 17 test case mencakup: bagian suami/istri,
+  bagian anak, ayah/ibu (termasuk Umariyyatain), asabah saudara, hijab/mahjub, 'awl, radd, operasi pecahan,
+  pembulatan Rupiah, dan validasi input tidak valid.</p>
+  <div id="testResults">Menjalankan test...</div>
+
+  <script src="fraction.js"></script>
+  <script src="references.js"></script>
+  <script src="validation.js"></script>
+  <script src="faraidh.js"></script>
+  <script src="tests.js"></script>
+  <script>runTests();</script>
+</body>
+</html>

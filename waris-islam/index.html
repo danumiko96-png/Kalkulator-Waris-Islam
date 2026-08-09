@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Waris Islam — Faraidh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="star-watermark" aria-hidden="true"></div>
+
+<header class="app-header">
+  <div class="app-header__inner">
+    <div class="app-header__brand">
+      <svg class="brand-star" viewBox="0 0 100 100" aria-hidden="true">
+        <use href="#khatam-star"></use>
+      </svg>
+      <div>
+        <h1>Kalkulator Waris Islam</h1>
+        <p class="app-header__subtitle">Pembagian Harta Berdasarkan Faraidh</p>
+      </div>
+    </div>
+    <div class="app-header__actions">
+      <button type="button" class="btn btn--ghost" id="btnReferences">Referensi Hukum</button>
+      <button type="button" class="btn btn--ghost" id="btnScenarios">Contoh Kasus</button>
+    </div>
+  </div>
+</header>
+
+<main class="app-main">
+
+  <!-- Progress Stepper -->
+  <nav class="stepper" aria-label="Langkah pengisian">
+    <ol>
+      <li data-step="1" class="stepper__item is-active"><span class="stepper__num">1</span><span class="stepper__label">Pewaris</span></li>
+      <li data-step="2" class="stepper__item"><span class="stepper__num">2</span><span class="stepper__label">Harta</span></li>
+      <li data-step="3" class="stepper__item"><span class="stepper__num">3</span><span class="stepper__label">Ahli Waris</span></li>
+      <li data-step="4" class="stepper__item"><span class="stepper__num">4</span><span class="stepper__label">Perhitungan</span></li>
+      <li data-step="5" class="stepper__item"><span class="stepper__num">5</span><span class="stepper__label">Hasil</span></li>
+    </ol>
+  </nav>
+
+  <div id="errorBanner" class="alert alert--error" hidden role="alert">
+    <strong>Periksa kembali data yang dimasukkan:</strong>
+    <ul id="errorList"></ul>
+  </div>
+
+  <!-- STEP 1: Data Pewaris -->
+  <section class="card step" id="step-1" data-step="1">
+    <div class="card__eyebrow">Langkah 1 dari 5</div>
+    <h2>Data Pewaris</h2>
+    <p class="card__hint">Jenis kelamin pewaris menentukan siapa yang bisa menjadi ahli waris pasangan (suami/istri).</p>
+
+    <div class="field-group">
+      <label class="field-label">Jenis kelamin pewaris</label>
+      <div class="radio-row">
+        <label class="radio-pill">
+          <input type="radio" name="deceasedGender" value="male">
+          <span>Laki-laki</span>
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="deceasedGender" value="female">
+          <span>Perempuan</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="methodSelect">
+        Metode Perhitungan
+        <span class="tooltip" tabindex="0" data-tip="Aplikasi ini menggunakan satu mesin hitung berbasis pendapat jumhur (mayoritas ulama). Pilihan di bawah hanya memengaruhi catatan/label referensi yang ditampilkan, bukan hasil angka, karena belum seluruh perbedaan mazhab diimplementasikan secara terpisah.">?</span>
+      </label>
+      <select id="methodSelect" class="input">
+        <option value="jumhur">Metode Faraidh Umum (Pendapat Jumhur)</option>
+        <option value="khi">Tekankan Referensi KHI Indonesia</option>
+      </select>
+      <p class="field-note">Catatan: kedua pilihan menggunakan mesin hitung yang sama. Untuk kasus dengan perbedaan pendapat fiqih, aplikasi akan menampilkan catatan khusus — lihat Referensi Hukum.</p>
+    </div>
+
+    <div class="step-actions">
+      <span></span>
+      <button type="button" class="btn btn--primary" data-next="2">Lanjut: Harta →</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: Harta -->
+  <section class="card step" id="step-2" data-step="2" hidden>
+    <div class="card__eyebrow">Langkah 2 dari 5</div>
+    <h2>Harta Peninggalan</h2>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="totalAssets">Total harta peninggalan (kotor)</label>
+        <input type="number" min="0" step="1" class="input" id="totalAssets" placeholder="Contoh: 500000000">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="currency">Mata uang</label>
+        <select id="currency" class="input">
+          <option value="IDR" selected>Rupiah (IDR)</option>
+        </select>
+      </div>
+    </div>
+
+    <h3 class="section-subtitle">Pengurang Harta Warisan</h3>
+    <p class="card__hint">Pembagian faraidh dilakukan atas harta bersih, setelah pengurang berikut diperhitungkan.</p>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="funeralCost">Biaya pengurusan jenazah</label>
+        <input type="number" min="0" step="1" class="input" id="funeralCost" value="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="debt">Utang pewaris</label>
+        <input type="number" min="0" step="1" class="input" id="debt" value="0">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="bequest">
+          Wasiat
+          <span class="tooltip" tabindex="0" data-tip="Wasiat maksimal 1/3 dari harta peninggalan dan tidak berlaku bagi ahli waris kecuali disetujui seluruh ahli waris lain (QS. An-Nisa terkait & Pasal 195 KHI).">?</span>
+        </label>
+        <input type="number" min="0" step="1" class="input" id="bequest" value="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="otherDeduction">Pengurang lainnya</label>
+        <input type="number" min="0" step="1" class="input" id="otherDeduction" value="0">
+      </div>
+    </div>
+
+    <div class="net-estate-preview" id="netEstatePreview">
+      Harta bersih: <strong>Rp 0</strong>
+    </div>
+
+    <div class="step-actions">
+      <button type="button" class="btn btn--secondary" data-prev="1">← Kembali</button>
+      <button type="button" class="btn btn--primary" data-next="3">Lanjut: Ahli Waris →</button>
+    </div>
+  </section>
+
+  <!-- STEP 3: Ahli Waris -->
+  <section class="card step" id="step-3" data-step="3" hidden>
+    <div class="card__eyebrow">Langkah 3 dari 5</div>
+    <h2>Ahli Waris</h2>
+
+    <h3 class="section-subtitle">Pasangan</h3>
+    <div class="field-row" id="spouseFields">
+      <div class="field-group" id="wivesField">
+        <label class="field-label" for="wives">Jumlah istri</label>
+        <input type="number" min="0" max="4" step="1" class="input" id="wives" value="0">
+      </div>
+      <div class="field-group" id="husbandField">
+        <label class="field-label" for="husband">Suami</label>
+        <select id="husband" class="input">
+          <option value="0">Tidak ada</option>
+          <option value="1">Ada</option>
+        </select>
+      </div>
+    </div>
+    <p class="field-note" id="spouseHint">Pilih jenis kelamin pewaris di Langkah 1 terlebih dahulu.</p>
+
+    <h3 class="section-subtitle">Anak Kandung</h3>
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="sons">Anak laki-laki</label>
+        <input type="number" min="0" step="1" class="input" id="sons" value="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="daughters">Anak perempuan</label>
+        <input type="number" min="0" step="1" class="input" id="daughters" value="0">
+      </div>
+    </div>
+
+    <h3 class="section-subtitle">Orang Tua</h3>
+    <div class="field-row">
+      <label class="checkbox-pill">
+        <input type="checkbox" id="father"> <span>Ayah masih hidup</span>
+      </label>
+      <label class="checkbox-pill">
+        <input type="checkbox" id="mother"> <span>Ibu masih hidup</span>
+      </label>
+    </div>
+
+    <h3 class="section-subtitle">
+      Kakek / Nenek
+      <span class="tooltip" tabindex="0" data-tip="Perhitungan kakek/nenek dan interaksinya dengan saudara memiliki perincian fiqih dan perbedaan pendapat. Lihat Referensi Hukum untuk penjelasan lebih lanjut.">?</span>
+    </h3>
+    <div class="field-row">
+      <label class="checkbox-pill">
+        <input type="checkbox" id="paternalGrandfather"> <span>Kakek dari pihak ayah</span>
+      </label>
+      <label class="checkbox-pill">
+        <input type="checkbox" id="paternalGrandmother"> <span>Nenek dari pihak ayah</span>
+      </label>
+      <label class="checkbox-pill">
+        <input type="checkbox" id="maternalGrandmother"> <span>Nenek dari pihak ibu</span>
+      </label>
+    </div>
+
+    <h3 class="section-subtitle">Saudara Kandung</h3>
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="fullBrothers">Saudara laki-laki sekandung</label>
+        <input type="number" min="0" step="1" class="input" id="fullBrothers" value="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="fullSisters">Saudara perempuan sekandung</label>
+        <input type="number" min="0" step="1" class="input" id="fullSisters" value="0">
+      </div>
+    </div>
+    <h3 class="section-subtitle">Saudara Seayah</h3>
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="paternalBrothers">Saudara laki-laki seayah</label>
+        <input type="number" min="0" step="1" class="input" id="paternalBrothers" value="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="paternalSisters">Saudara perempuan seayah</label>
+        <input type="number" min="0" step="1" class="input" id="paternalSisters" value="0">
+      </div>
+    </div>
+    <h3 class="section-subtitle">Saudara Seibu</h3>
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label" for="maternalBrothers">Saudara laki-laki seibu</label>
+        <input type="number" min="0" step="1" class="input" id="maternalBrothers" value="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="maternalSisters">Saudara perempuan seibu</label>
+        <input type="number" min="0" step="1" class="input" id="maternalSisters" value="0">
+      </div>
+    </div>
+
+    <p class="field-note">Ahli waris lain (mis. cucu dari anak laki-laki) belum didukung penuh pada versi ini — struktur data sengaja dibuat mudah dikembangkan. Lihat README.</p>
+
+    <div class="step-actions">
+      <button type="button" class="btn btn--secondary" data-prev="2">← Kembali</button>
+      <button type="button" class="btn btn--primary" data-next="4">Lanjut: Perhitungan →</button>
+    </div>
+  </section>
+
+  <!-- STEP 4: Perhitungan -->
+  <section class="card step" id="step-4" data-step="4" hidden>
+    <div class="card__eyebrow">Langkah 4 dari 5</div>
+    <h2>Perhitungan</h2>
+    <p class="card__hint">Periksa ringkasan data sebelum menghitung pembagian waris.</p>
+    <div id="summaryPreview" class="summary-preview"></div>
+
+    <div class="step-actions">
+      <button type="button" class="btn btn--secondary" data-prev="3">← Kembali</button>
+      <button type="button" class="btn btn--primary btn--large" id="btnCalculate">Hitung Warisan</button>
+    </div>
+  </section>
+
+  <!-- STEP 5: Hasil -->
+  <section class="card step" id="step-5" data-step="5" hidden>
+    <div class="card__eyebrow">Langkah 5 dari 5</div>
+    <h2>Hasil Pembagian Waris</h2>
+
+    <div id="resultsContent"></div>
+
+    <div class="step-actions step-actions--result">
+      <button type="button" class="btn btn--secondary" data-prev="3">← Ubah Data</button>
+      <div class="result-tools">
+        <button type="button" class="btn btn--ghost" id="btnAudit">Lihat Proses Perhitungan</button>
+        <button type="button" class="btn btn--ghost" id="btnCopy">Salin Hasil</button>
+        <button type="button" class="btn btn--ghost" id="btnPrint">Cetak / Simpan PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="disclaimer">
+    <h3>Disclaimer</h3>
+    <p>
+      Aplikasi ini merupakan alat bantu perhitungan pembagian waris berdasarkan kaidah faraidh dan referensi
+      hukum yang dicantumkan. Hasil perhitungan tidak dimaksudkan sebagai fatwa, putusan hukum, atau pengganti
+      konsultasi dengan ulama, ahli faraidh, atau lembaga hukum yang berwenang.
+    </p>
+    <p>
+      Beberapa persoalan kewarisan memiliki perbedaan pendapat fiqih dan/atau ketentuan hukum positif yang dapat
+      berbeda berdasarkan kondisi kasus. Untuk pembagian harta warisan secara nyata, lakukan verifikasi terhadap
+      sumber hukum dan konsultasikan kasus kepada pihak yang kompeten.
+    </p>
+  </footer>
+
+</main>
+
+<!-- Modal: Referensi Hukum -->
+<div class="modal-overlay" id="referencesModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="referencesTitle">
+    <div class="modal__header">
+      <h2 id="referencesTitle">Referensi Hukum</h2>
+      <button type="button" class="modal__close" id="closeReferences" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal__body" id="referencesBody"></div>
+  </div>
+</div>
+
+<!-- Modal: Contoh Kasus -->
+<div class="modal-overlay" id="scenariosModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="scenariosTitle">
+    <div class="modal__header">
+      <h2 id="scenariosTitle">Contoh Kasus</h2>
+      <button type="button" class="modal__close" id="closeScenarios" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal__body" id="scenariosBody"></div>
+  </div>
+</div>
+
+<!-- Modal: Audit / Proses Perhitungan -->
+<div class="modal-overlay" id="auditModal" hidden>
+  <div class="modal modal--wide" role="dialog" aria-modal="true" aria-labelledby="auditTitle">
+    <div class="modal__header">
+      <h2 id="auditTitle">Proses Perhitungan</h2>
+      <button type="button" class="modal__close" id="closeAudit" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal__body" id="auditBody"></div>
+  </div>
+</div>
+
+<!-- Inline SVG symbol defs (khatam star signature motif) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="khatam-star" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <polygon points="50,4 61,35 94,35 67,55 78,88 50,68 22,88 33,55 6,35 39,35" opacity="0.9"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<script src="fraction.js"></script>
+<script src="references.js"></script>
+<script src="validation.js"></script>
+<script src="faraidh.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
